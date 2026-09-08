@@ -1,0 +1,3 @@
+import { boolean, index, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { clinics } from "./clinics";
+export const commercialRules = pgTable("commercial_rules", { id: uuid("id").defaultRandom().primaryKey(), clinicId: uuid("clinic_id").notNull().references(()=>clinics.id,{onDelete:"restrict"}), title: varchar("title",{length:160}).notNull(), content: text("content").notNull(), active: boolean("active").default(true).notNull(), createdAt: timestamp("created_at",{withTimezone:true}).defaultNow().notNull(), updatedAt: timestamp("updated_at",{withTimezone:true}).defaultNow().notNull() }, table=>[index("commercial_rules_clinic_active_idx").on(table.clinicId,table.active)]);

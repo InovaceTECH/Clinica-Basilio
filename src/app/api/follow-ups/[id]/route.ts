@@ -1,0 +1,7 @@
+import { z } from "zod";
+import { AuthorizationError } from "@/auth/authorization";
+import { requirePermission } from "@/auth/current-authorization";
+import { updateFollowUpSchema } from "@/schemas/follow-up";
+import { closeFollowUp, FollowUpNotFoundError, updateFollowUp } from "@/services/follow-ups/commands";
+const bodySchema = z.discriminatedUnion("action", [z.object({ action: z.literal("update"), data: updateFollowUpSchema }), z.object({ action: z.literal("complete") }), z.object({ action: z.literal("cancel") })]);
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) { try { const tenant = await requirePermission("followUps.create"); const { id } = await params; const body = bodySchema.parse(await request.json()); const followUp = body.action === "update" ? await updateFollowUp(tenant, id, body.data) : await closeFollowUp(tenant, id, body.action === "complete" ? "COMPLETED" : "CANCELED"); return Response.json(followUp); } catch (error) { if (error instanceof AuthorizationError) return Response.json({ message: "Você não possui permissão para alterar follow-ups." }, { status: 403 }); if (error instanceof FollowUpNotFoundError) return Response.json({ message: "O follow-up solicitado não foi encontrado." }, { status: 404 }); if (error instanceof z.ZodError || error instanceof SyntaxError) return Response.json({ message: "Revise os dados do follow-up." }, { status: 400 }); return Response.json({ message: "Não foi possível atualizar o follow-up." }, { status: 500 }); } }
