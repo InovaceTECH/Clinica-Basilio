@@ -8,6 +8,7 @@ const optionalSecretSchema = z.preprocess(
 );
 
 const serverEnvSchema = z.object({
+  DATABASE_DRIVER: z.enum(["neon", "postgres"]).default("neon"),
   DATABASE_URL: z
     .string()
     .trim()
@@ -20,6 +21,7 @@ const serverEnvSchema = z.object({
 });
 
 const parsedEnv = serverEnvSchema.safeParse({
+  DATABASE_DRIVER: process.env.DATABASE_DRIVER,
   DATABASE_URL: process.env.DATABASE_URL,
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
   BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,

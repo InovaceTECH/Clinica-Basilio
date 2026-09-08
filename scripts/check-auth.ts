@@ -105,9 +105,18 @@ async function checkAuth(role: AppRole) {
       const expectedPath = getAuthenticatedHomePath(tenant);
       for (const path of ["/", "/login", ...(role === "RECEPTIONIST" ? ["/dashboard"] : [])]) {
         const response: Response = await fetch(new URL(path, httpUrl), { headers: { cookie }, redirect: "manual" });
-        assert.equal(response.status, 307, `Redirecionamento HTTP de ${path} para ${role}`);
-        assert.equal(response.headers.get("location"), expectedPath);
-        await response.body?.cancel();
+        if (response.status === 307) {
+          assert.equal(response.headers.get("location"), expectedPath);
+          await response.body?.cancel();
+        } else {
+          // A loading boundary can flush HTTP 200 before Next emits its redirect.
+          assert.equal(response.status, 200, `Redirecionamento de ${path} para ${role}`);
+          const html = await response.text();
+          const redirectTag = html.match(/<meta\b[^>]*\bid="__next-page-redirect"[^>]*>/)?.[0];
+          assert.ok(redirectTag, "Resposta deve conter o redirecionamento do Next, não a página protegida.");
+          assert.ok(redirectTag.includes('http-equiv="refresh"'));
+          assert.ok(redirectTag.includes(`content="1;url=${expectedPath}"`), "Destino do redirecionamento deve respeitar a permissão.");
+        }
       }
       const landingResponse = await fetch(new URL(expectedPath, httpUrl), { headers: { cookie }, redirect: "manual" });
       assert.equal(landingResponse.status, 200);
