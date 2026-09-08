@@ -27,7 +27,7 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "flex h-10 w-full items-center justify-between gap-2 rounded-sm border border-input bg-surface px-3 py-2 text-base text-foreground outline-none transition-colors focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/15 disabled:cursor-not-allowed disabled:bg-surface-secondary disabled:text-text-disabled data-placeholder:text-text-faint aria-invalid:border-danger aria-invalid:ring-3 aria-invalid:ring-danger/15 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "flex h-11 w-full items-center justify-between gap-2 rounded-md border border-input bg-surface px-4 text-body text-foreground outline-none transition-[border-color,box-shadow] duration-200 ease-apple focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:bg-surface-hover disabled:text-text-disabled data-placeholder:text-text-faint aria-invalid:border-danger aria-invalid:ring-3 aria-invalid:ring-danger/20 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       {...props}
@@ -52,7 +52,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "relative z-50 max-h-80 min-w-36 overflow-x-hidden overflow-y-auto rounded-md border border-border bg-popover text-popover-foreground shadow-level-1 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:translate-y-1",
+          "glass-strong glass-edge relative z-50 max-h-80 min-w-36 overflow-x-hidden overflow-y-auto rounded-md border border-glass-border text-popover-foreground shadow-level-3 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:translate-y-1",
           className,
         )}
         {...props}
@@ -89,7 +89,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center rounded-sm py-2 pr-8 pl-2 text-sm outline-none select-none focus:bg-surface-hover focus:text-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
+        "relative flex w-full cursor-default items-center rounded-xs py-2 pr-8 pl-2.5 text-body-sm outline-none select-none focus:bg-surface-hover focus:text-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}

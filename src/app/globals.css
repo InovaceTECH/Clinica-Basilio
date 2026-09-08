@@ -2,61 +2,190 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   Camada 1 — Tokens primitivos · tema claro
+   Paleta neutra fria no estilo Apple: fundo cinza, superfícies
+   brancas, azul único como cor estrutural.
+   ============================================================ */
 :root {
-  --primary: #0075de;
-  --primary-hover: #0068c7;
-  --primary-active: #005bab;
+  color-scheme: light;
+
+  --radius: 0.75rem;
+
+  --duration-instant: 120ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+
+  --primary: #0071e3;
+  --primary-hover: #0077ed;
+  --primary-active: #006ad4;
   --primary-foreground: #ffffff;
 
-  --background: #f6f5f4;
+  --background: #f5f5f7;
   --surface: #ffffff;
-  --surface-secondary: #f9f9f8;
-  --surface-hover: #f3f2f1;
+  --surface-secondary: #fbfbfd;
+  --surface-hover: #f0f0f3;
+  --surface-sunken: #ededf0;
 
-  --foreground: #111111;
-  --text-secondary: #31302e;
-  --text-muted: #615d59;
-  --text-faint: #8f8b87;
-  --text-disabled: #a9a6a3;
+  --foreground: #1d1d1f;
+  --text-secondary: #424245;
+  --text-muted: #6e6e73;
+  --text-faint: #86868b;
+  --text-disabled: #aeaeb2;
 
-  --border: #e6e6e6;
-  --border-strong: #d8d8d8;
-  --input: #e6e6e6;
-  --ring: #0075de;
+  --border: rgb(0 0 0 / 8%);
+  --border-strong: rgb(0 0 0 / 16%);
+  --input: rgb(0 0 0 / 14%);
+  --ring: #0071e3;
 
   --card: #ffffff;
-  --card-foreground: #111111;
+  --card-foreground: #1d1d1f;
   --popover: #ffffff;
-  --popover-foreground: #111111;
-  --secondary: #f9f9f8;
-  --secondary-foreground: #31302e;
-  --muted: #f3f2f1;
-  --muted-foreground: #615d59;
-  --accent: #edf3fc;
-  --accent-foreground: #3a69b7;
+  --popover-foreground: #1d1d1f;
+  --secondary: #fbfbfd;
+  --secondary-foreground: #424245;
+  --muted: #f0f0f3;
+  --muted-foreground: #6e6e73;
+  --accent: #e9f1fd;
+  --accent-foreground: #0062c4;
 
-  --success: #18864b;
-  --success-bg: #eaf6ef;
-  --success-border: #c9e8d5;
-  --warning: #a66300;
-  --warning-bg: #fff5df;
-  --warning-border: #f1d79a;
-  --danger: #c73535;
-  --danger-bg: #fdeeee;
-  --danger-border: #f2caca;
-  --info: #3a69b7;
-  --info-bg: #edf3fc;
-  --info-border: #cad9f2;
-  --destructive: #c73535;
+  --success: #1a7f43;
+  --success-bg: #e8f6ee;
+  --success-border: rgb(26 127 67 / 20%);
+  --warning: #9a6100;
+  --warning-bg: #fff4e0;
+  --warning-border: rgb(154 97 0 / 22%);
+  --danger: #c9302c;
+  --danger-bg: #fdeded;
+  --danger-border: rgb(201 48 44 / 20%);
+  --info: #0062c4;
+  --info-bg: #e9f1fd;
+  --info-border: rgb(0 98 196 / 20%);
+  --destructive: #c9302c;
+  --destructive-foreground: #ffffff;
 
-  --priority-high: #b32626;
-  --priority-high-bg: #fdeeee;
-  --priority-medium: #8b5700;
-  --priority-medium-bg: #fff5df;
-  --priority-low: #3a69b7;
-  --priority-low-bg: #edf3fc;
+  --priority-high: #b52a26;
+  --priority-high-bg: #fdeded;
+  --priority-medium: #8a5600;
+  --priority-medium-bg: #fff4e0;
+  --priority-low: #0062c4;
+  --priority-low-bg: #e9f1fd;
+
+  --sidebar: rgb(255 255 255 / 62%);
+  --sidebar-foreground: #424245;
+  --sidebar-border: rgb(0 0 0 / 8%);
+  --sidebar-accent: rgb(0 113 227 / 10%);
+  --sidebar-accent-foreground: #0062c4;
+  --sidebar-primary: #0071e3;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-ring: #0071e3;
+
+  /* Material de vidro — usado só nas superfícies de navegação e sobreposição */
+  --glass-bg: rgb(255 255 255 / 72%);
+  --glass-bg-strong: rgb(255 255 255 / 86%);
+  --glass-border: rgb(0 0 0 / 8%);
+  --glass-highlight: rgb(255 255 255 / 90%);
+  --glass-blur: 24px;
+  --glass-saturate: 180%;
+
+  /* Seta dos selects nativos — cor fixa por tema, data URI não herda currentColor */
+  --select-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236e6e73' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+
+  --elevation-1: 0 1px 3px rgb(0 0 0 / 6%);
+  --elevation-2: 0 4px 16px rgb(0 0 0 / 8%);
+  --elevation-3: 0 12px 40px rgb(0 0 0 / 12%);
+  --elevation-4: 0 24px 64px rgb(0 0 0 / 16%);
 }
 
+/* ============================================================
+   Tema escuro — preto puro no fundo, cinzas do iOS nas camadas
+   ============================================================ */
+.dark {
+  color-scheme: dark;
+
+  --primary: #2997ff;
+  --primary-hover: #47a6ff;
+  --primary-active: #0a84ff;
+  --primary-foreground: #002a52;
+
+  --background: #000000;
+  --surface: #1c1c1e;
+  --surface-secondary: #161618;
+  --surface-hover: #2c2c2e;
+  --surface-sunken: #0a0a0b;
+
+  --foreground: #f5f5f7;
+  --text-secondary: #d1d1d6;
+  --text-muted: #a1a1a6;
+  --text-faint: #8e8e93;
+  --text-disabled: #636366;
+
+  --border: rgb(255 255 255 / 10%);
+  --border-strong: rgb(255 255 255 / 20%);
+  --input: rgb(255 255 255 / 18%);
+  --ring: #2997ff;
+
+  --card: #1c1c1e;
+  --card-foreground: #f5f5f7;
+  --popover: #2c2c2e;
+  --popover-foreground: #f5f5f7;
+  --secondary: #161618;
+  --secondary-foreground: #d1d1d6;
+  --muted: #2c2c2e;
+  --muted-foreground: #a1a1a6;
+  --accent: rgb(41 151 255 / 18%);
+  --accent-foreground: #6cb6ff;
+
+  --success: #40c46a;
+  --success-bg: rgb(64 196 106 / 14%);
+  --success-border: rgb(64 196 106 / 28%);
+  --warning: #e5a13c;
+  --warning-bg: rgb(229 161 60 / 14%);
+  --warning-border: rgb(229 161 60 / 28%);
+  --danger: #ff6961;
+  --danger-bg: rgb(255 105 97 / 14%);
+  --danger-border: rgb(255 105 97 / 28%);
+  --info: #6cb6ff;
+  --info-bg: rgb(41 151 255 / 16%);
+  --info-border: rgb(41 151 255 / 30%);
+  --destructive: #ff6961;
+  --destructive-foreground: #3a0f0d;
+
+  --priority-high: #ff8a84;
+  --priority-high-bg: rgb(255 105 97 / 14%);
+  --priority-medium: #eab357;
+  --priority-medium-bg: rgb(229 161 60 / 14%);
+  --priority-low: #6cb6ff;
+  --priority-low-bg: rgb(41 151 255 / 16%);
+
+  --sidebar: rgb(28 28 30 / 60%);
+  --sidebar-foreground: #d1d1d6;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-accent: rgb(41 151 255 / 20%);
+  --sidebar-accent-foreground: #6cb6ff;
+  --sidebar-primary: #2997ff;
+  --sidebar-primary-foreground: #002a52;
+  --sidebar-ring: #2997ff;
+
+  --glass-bg: rgb(28 28 30 / 68%);
+  --glass-bg-strong: rgb(28 28 30 / 86%);
+  --glass-border: rgb(255 255 255 / 12%);
+  --glass-highlight: rgb(255 255 255 / 12%);
+
+  --select-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23a1a1a6' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+
+  --elevation-1: 0 1px 3px rgb(0 0 0 / 40%);
+  --elevation-2: 0 4px 16px rgb(0 0 0 / 48%);
+  --elevation-3: 0 12px 40px rgb(0 0 0 / 56%);
+  --elevation-4: 0 24px 64px rgb(0 0 0 / 64%);
+}
+
+/* ============================================================
+   Camada 2 — Tokens semânticos expostos ao Tailwind
+   ============================================================ */
 @theme inline {
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
@@ -67,6 +196,7 @@
   --color-surface: var(--surface);
   --color-surface-secondary: var(--surface-secondary);
   --color-surface-hover: var(--surface-hover);
+  --color-surface-sunken: var(--surface-sunken);
 
   --color-foreground: var(--foreground);
   --color-text-secondary: var(--text-secondary);
@@ -90,6 +220,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
   --color-success: var(--success);
   --color-success-bg: var(--success-bg);
@@ -111,37 +242,67 @@
   --color-priority-low: var(--priority-low);
   --color-priority-low-bg: var(--priority-low-bg);
 
-  --font-sans: var(--font-inter);
-  --font-heading: var(--font-inter);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-  --text-display: 3rem;
-  --text-display--line-height: 1.05;
-  --text-display--letter-spacing: -0.09375rem;
+  --color-glass: var(--glass-bg);
+  --color-glass-strong: var(--glass-bg-strong);
+  --color-glass-border: var(--glass-border);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Escala tipográfica da Apple: tamanhos maiores respiram, tracking negativo */
+  --text-display: 3.5rem;
+  --text-display--line-height: 1.07;
+  --text-display--letter-spacing: -0.012em;
   --text-heading-1: 2rem;
-  --text-heading-1--line-height: 1.15;
-  --text-heading-1--letter-spacing: -0.046875rem;
+  --text-heading-1--line-height: 1.125;
+  --text-heading-1--letter-spacing: -0.008em;
   --text-heading-2: 1.5rem;
-  --text-heading-2--line-height: 1.25;
-  --text-heading-2--letter-spacing: -0.025rem;
+  --text-heading-2--line-height: 1.16;
+  --text-heading-2--letter-spacing: -0.006em;
   --text-heading-3: 1.25rem;
-  --text-heading-3--line-height: 1.3;
-  --text-body: 1rem;
-  --text-body--line-height: 1.5;
+  --text-heading-3--line-height: 1.2;
+  --text-heading-3--letter-spacing: -0.004em;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.47;
+  --text-body--letter-spacing: -0.014em;
   --text-body-sm: 0.875rem;
-  --text-body-sm--line-height: 1.45;
+  --text-body-sm--line-height: 1.43;
+  --text-body-sm--letter-spacing: -0.01em;
   --text-label: 0.8125rem;
   --text-label--line-height: 1.4;
+  --text-label--letter-spacing: -0.006em;
   --text-caption: 0.75rem;
-  --text-caption--line-height: 1.4;
+  --text-caption--line-height: 1.35;
+  --text-caption--letter-spacing: 0em;
 
-  --radius-xs: 0.25rem;
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Raios no padrão Apple — remapear a escala arredonda o app inteiro */
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.125rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
 
-  --shadow-level-1: 0 1px 2px rgb(0 0 0 / 3%), 0 4px 12px rgb(0 0 0 / 4%);
-  --shadow-level-2: 0 4px 12px rgb(0 0 0 / 6%), 0 16px 40px rgb(0 0 0 / 8%);
+  --shadow-level-1: var(--elevation-1);
+  --shadow-level-2: var(--elevation-2);
+  --shadow-level-3: var(--elevation-3);
+  --shadow-level-4: var(--elevation-4);
+
+  --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-entrance: cubic-bezier(0, 0, 0.58, 1);
+  --ease-exit: cubic-bezier(0.42, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @layer base {
@@ -151,14 +312,110 @@
 
   html {
     @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     @apply min-h-full bg-background text-foreground;
   }
 
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  summary {
+    cursor: pointer;
+  }
+
+  dialog {
+    margin: auto;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* O recuo ao pressionar também é movimento: desliga junto. */
+    [data-slot="button"]:active,
+    [data-sidebar="menu-button"]:active {
+      transform: none !important;
+    }
+  }
+
+  @media (pointer: coarse) {
+    [data-slot="button"],
+    input,
+    select,
+    summary {
+      min-height: 44px;
+    }
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+}
+
+@layer utilities {
+  /* Vidro: fundo translúcido + saturação, como as barras do macOS.
+     Reservado às superfícies de navegação e sobreposição — nunca em listas,
+     para não pesar em computadores modestos. */
+  .glass {
+    background-color: var(--glass-bg);
+    backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+    -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  }
+
+  .glass-strong {
+    background-color: var(--glass-bg-strong);
+    backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+    -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  }
+
+  /* Fio de luz na borda superior — o que faz o vidro parecer vidro. */
+  .glass-edge {
+    box-shadow: inset 0 1px 0 0 var(--glass-highlight);
+  }
+
+  /* Sem suporte a backdrop-filter, volta para superfície opaca legível. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass,
+    .glass-strong {
+      background-color: var(--popover);
+    }
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Recuo curto ao pressionar: a resposta física que falta em botões web. */
+  .press {
+    transition: transform var(--duration-instant) var(--ease-apple);
+  }
+
+  .press:active:not(:disabled) {
+    transform: scale(0.97);
   }
 }

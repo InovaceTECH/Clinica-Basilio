@@ -2,12 +2,17 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Cartão no padrão Apple: um degrau de superfície acima do fundo, borda fina
+ * translúcida e sombra baixa. As três coisas juntas — se tirar uma, o cartão
+ * some no tema escuro.
+ */
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "flex flex-col gap-4 rounded-lg border border-border bg-card py-4 text-card-foreground sm:gap-6 sm:py-6",
+        "flex flex-col gap-5 rounded-lg border border-border bg-card py-6 text-card-foreground shadow-level-1 sm:gap-6",
         className,
       )}
       {...props}
@@ -20,7 +25,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "grid gap-1 px-4 sm:px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto]",
+        "grid gap-1.5 px-6 sm:has-data-[slot=card-action]:grid-cols-[1fr_auto]",
         className,
       )}
       {...props}
@@ -52,7 +57,10 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-action"
-      className={cn("col-start-2 row-span-2 row-start-1 self-start", className)}
+      className={cn(
+        "mt-3 self-start sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:mt-0",
+        className,
+      )}
       {...props}
     />
   );
@@ -60,11 +68,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="card-content"
-      className={cn("px-4 sm:px-6", className)}
-      {...props}
-    />
+    <div data-slot="card-content" className={cn("px-6", className)} {...props} />
   );
 }
 
@@ -72,10 +76,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn(
-        "flex items-center border-t border-border px-4 pt-4 sm:px-6 sm:pt-6",
-        className,
-      )}
+      className={cn("flex items-center border-t border-border px-6 pt-6", className)}
       {...props}
     />
   );
