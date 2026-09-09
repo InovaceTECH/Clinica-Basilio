@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 
 import { assertPermission } from "@/auth/authorization";
 import type { TenantContext } from "@/auth/tenant-context";
-import { db } from "@/db";
+import { db, executeBatch } from "@/db";
 import { followUps, interactions, opportunities } from "@/db/schema";
 import {
   createInteractionSchema,
@@ -49,7 +49,7 @@ export async function createInteraction(
       : interaction.result === "DO_NOT_CONTACT"
         ? "DO_NOT_CONTACT"
         : undefined;
-  const [createdInteractions] = await db.batch([
+  const [createdInteractions] = await executeBatch(db => [
     db
       .insert(interactions)
       .values({
@@ -85,7 +85,7 @@ export async function createInteraction(
           eq(followUps.status, "PENDING"),
         )),
     ] : []),
-  ]);
+  ] as const);
 
   return createdInteractions[0]!;
 }

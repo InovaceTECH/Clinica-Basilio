@@ -177,6 +177,8 @@ Deploy
 
 O banco principal será PostgreSQL hospedado no Neon.
 
+Para desenvolvimento local, também é suportado PostgreSQL via TCP (`DATABASE_DRIVER=postgres`, driver `pg`). O padrão remoto permanece Neon HTTP. Ambos usam Drizzle, o mesmo schema e as mesmas migrations. Gravações agrupadas usam `executeBatch`, que mantém a atomicidade por transação local ou batch HTTP. Veja [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md).
+
 O banco armazenará:
 
 - clínicas;

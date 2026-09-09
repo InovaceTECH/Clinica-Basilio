@@ -101,15 +101,15 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
         title={opportunity.patientName}
       />
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="space-y-6">
+      <div className="mt-8 grid items-start gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className="min-w-0 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Dados da oportunidade</CardTitle>
               <CardDescription>Informações comerciais do orçamento e do paciente.</CardDescription>
             </CardHeader>
             <CardContent>
-              <dl className="grid gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+              <dl className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
                 <Detail label="Paciente" value={opportunity.patientName} />
                 <Detail label="Telefone" value={formatPhone(opportunity.patientPhone)} />
                 <Detail label="Tratamento" value={opportunity.treatment} />
@@ -134,17 +134,9 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Linha do tempo</CardTitle>
-              <CardDescription>Orçamento, análises e contatos em ordem cronológica.</CardDescription>
-              <CardAction><RegisterInteractionDialog opportunityId={opportunity.id} /></CardAction>
-            </CardHeader>
-            <OpportunityTimeline analyses={analyses} budget={opportunity} interactions={interactions} />
-          </Card>
         </div>
 
-        <aside className="space-y-6">
+        <aside className="min-w-0 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Prioridade e status</CardTitle>
@@ -174,11 +166,19 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
 
           <Card><CardHeader><CardTitle>Próxima ação</CardTitle><CardDescription>Agende e acompanhe os retornos desta oportunidade.</CardDescription></CardHeader><CardContent><FollowUpPanel followUps={followUps} opportunityId={opportunity.id} /></CardContent></Card>
         </aside>
+        <Card className="min-w-0 xl:col-span-2">
+          <CardHeader>
+            <CardTitle>Linha do tempo</CardTitle>
+            <CardDescription>Orçamento, análises e contatos em ordem cronológica.</CardDescription>
+            <CardAction><RegisterInteractionDialog opportunityId={opportunity.id} /></CardAction>
+          </CardHeader>
+          <OpportunityTimeline analyses={analyses} budget={opportunity} interactions={interactions} />
+        </Card>
       </div>
     </>
   );
 }
 
 function Detail({ label, value }: { label: string; value: string }) {
-  return <div><dt className="text-label text-text-muted">{label}</dt><dd className="mt-1 text-body text-text-secondary">{value}</dd></div>;
+  return <div className="min-w-0"><dt className="text-label text-text-muted">{label}</dt><dd className="mt-1 break-words text-body-sm text-text-secondary">{value}</dd></div>;
 }

@@ -1,29 +1,31 @@
 import { type LucideIcon } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/patterns";
 
 type SectionPlaceholderProps = {
   icon: LucideIcon;
   title: string;
   description: string;
+  action?: { label: string; href: string };
 };
 
+/**
+ * Aviso de área ainda não disponível. Usa o mesmo desenho dos estados vazios
+ * para que "sem dados" e "em construção" não pareçam problemas diferentes.
+ */
 export function SectionPlaceholder({
-  icon: Icon,
+  icon,
   title,
   description,
+  action,
 }: SectionPlaceholderProps) {
   return (
-    <Card className="mt-8 max-w-2xl">
-      <CardContent className="flex flex-col items-start gap-4 py-6 sm:py-8">
-        <span className="grid size-10 place-items-center rounded-md bg-info-bg text-info">
-          <Icon aria-hidden="true" className="size-5" />
-        </span>
-        <div>
-          <h2 className="text-heading-3 font-semibold text-foreground">{title}</h2>
-          <p className="mt-2 text-body-sm text-text-muted">{description}</p>
-        </div>
-      </CardContent>
-    </Card>
+    <EmptyState
+      action={action}
+      className="mt-8"
+      description={description}
+      icon={icon}
+      title={title}
+    />
   );
 }

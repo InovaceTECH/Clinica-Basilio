@@ -6,7 +6,8 @@ function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
-      className={cn("animate-pulse rounded-sm bg-surface-hover", className)}
+      aria-hidden="true"
+      className={cn("rounded-sm bg-surface-hover", className)}
       {...props}
     />
   );

@@ -21,6 +21,116 @@ Este documento é a fonte de verdade visual do projeto.
 
 Toda implementação de frontend deve respeitar estas regras.
 
+## Direção visual — estilo Apple (8 de setembro de 2026)
+
+Direção dada pela gestão: **arredondado, minimalista, vidro líquido, simples e satisfatório.** Esta seção prevalece sobre qualquer regra anterior de cor, raio, tipografia e uso de desfoque. Os princípios de clareza, hierarquia e consistência continuam valendo.
+
+### Os cinco compromissos
+
+1. **Arredondado.** A escala de raios foi remapeada para o padrão Apple: 8 / 10 / 12 / 18 / 24 px. Como os componentes usam `rounded-sm|md|lg|xl`, um único ajuste de token arredondou o sistema inteiro. Botões são pílulas (`rounded-full`).
+2. **Minimalista.** Hierarquia por tamanho, peso e cor — não por caixas. Bordas translúcidas (`rgb(0 0 0 / 8%)`), sombras baixas, nada de traço grosso ou linha divisória onde o espaço já separa.
+3. **Vidro líquido.** Superfícies de navegação e sobreposição usam `.glass` (fundo translúcido + `backdrop-filter: saturate(180%) blur(24px)`) com `.glass-edge`, o fio de luz na borda superior. **Só nessas superfícies** — nunca em listas ou cartões de conteúdo.
+4. **Simples.** Uma cor estrutural (azul). Cores semânticas só comunicam estado.
+5. **Satisfatório.** Recuo de 3% ao pressionar botões e itens de navegação, elevação sutil no hover dos cartões com link, curva `--ease-apple` em tudo. Desligado por `prefers-reduced-motion`.
+
+### Paleta
+
+| Token | Claro | Escuro |
+| --- | --- | --- |
+| `background` | `#F5F5F7` | `#000000` |
+| `surface` (cartões, painel de conteúdo) | `#FFFFFF` | `#1C1C1E` |
+| `surface-hover` | `#F0F0F3` | `#2C2C2E` |
+| `foreground` | `#1D1D1F` | `#F5F5F7` |
+| `text-muted` | `#6E6E73` | `#A1A1A6` |
+| `primary` | `#0071E3` | `#2997FF` |
+| `border` | `rgb(0 0 0 / 8%)` | `rgb(255 255 255 / 10%)` |
+
+No tema escuro o botão primário usa texto escuro (`#002A52`) sobre o azul claro: mantém 5,1:1 de contraste, enquanto branco sobre azul ficaria em 3,6:1.
+
+### Estrutura da janela
+
+Padrão macOS: fundo cinza da janela, barra lateral como painel de vidro flutuante e o conteúdo num cartão branco arredondado com sombra. Um gradiente ambiente discreto atrás de tudo dá ao vidro algo para capturar.
+
+### Tipografia
+
+Pilha SF Pro com fallback do sistema, sem download. Tracking negativo nos títulos (`-0.008em` no H1), corpo em 17 px como na Apple.
+
+### Sobre o desfoque e computadores modestos
+
+A direção anterior proibia desfoque por causa das máquinas da clínica. O desfoque agora existe, mas restrito: barra lateral, barra superior, menus, diálogos, painel lateral do celular e a paleta de comandos — um punhado de elementos fixos, não um por linha de lista. Há fallback opaco via `@supports` para navegadores sem `backdrop-filter`. Se aparecer lentidão nas máquinas da recepção, o ajuste é num lugar só: `--glass-blur` em `globals.css`.
+
+---
+
+## Direção operacional — setembro de 2026
+
+Para o uso em computadores modestos, esta atualização prevalece sobre os exemplos anteriores de fonte e cor primária:
+
+* Usar a fonte do sistema (`-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif`), sem download de fontes.
+* ~~Azul `#0068C7` e superfícies quentes.~~ Substituído pela paleta neutra e pelo azul `#0071E3` da direção Apple. O restante deste bloco continua válido.
+* Navegação dividida em Atendimento e Organização; mostrar entradas conforme permissões, com item ativo também nas páginas de detalhe.
+* Indicadores em grade bento (um cartão por métrica); valores tabulares. Receita recuperada reúne o valor e a quantidade de oportunidades.
+* Lista: agrupar paciente/tratamento, prioridade/status e datas de contato. Tabela a partir de 1280 px; cartões de leitura abaixo disso.
+* Filtros secundários e fundamentação da análise em disclosures nativos. A mensagem sugerida e a próxima ação ficam visíveis.
+* Gráficos em HTML/CSS renderizados no servidor. Sem bibliotecas de gráficos, fontes remotas ou animações contínuas. Skeletons estáticos; transições de 200–300 ms, respeitando movimento reduzido. (O desfoque, antes proibido aqui, passou a ser permitido nas superfícies de navegação e sobreposição — ver "Direção visual — estilo Apple".)
+* Manter paginação de 20 oportunidades. Links de detalhe não fazem prefetch automático para evitar carregar análises de pacientes antes da abertura.
+* Manter busca, filtros e agregações no servidor. JavaScript limitado às interações; apenas o botão de copiar hidrata a mensagem da análise.
+
+Referência consultada pelo MCP do 21st.dev: [Dashboard Sidebar, de arunjdass](https://21st.dev/@arunjdass/components/dashboard-sidebar), componente 14941. A organização por grupos e o contraste discreto de superfícies foram adaptados aos componentes e às permissões existentes.
+
+---
+
+## Infraestrutura de UI — atualização de 8 de setembro de 2026
+
+Esta seção descreve a arquitetura em camadas adotada nesta atualização. Ela **prevalece** sobre descrições anteriores de shell, navegação e dark mode; os princípios visuais, a paleta e a escala tipográfica permanecem válidos.
+
+### Camadas
+
+```text
+1. Tokens          src/app/globals.css        variáveis + tema claro/escuro
+2. Primitivos      src/components/ui/*        shadcn/Radix adaptados aos tokens
+3. Padrões         src/components/patterns/*  composições de produto
+4. Shell           src/components/layout/*    navegação, topo, paleta de comandos
+5. Telas           src/app/**                 Server Components
+```
+
+Regra: uma tela nunca desenha moldura, borda ou espaçamento próprio quando existe um padrão da camada 3. Um padrão nunca reimplementa comportamento que já existe num primitivo da camada 2.
+
+### Camada 1 — Tokens
+
+* `:root` define o tema claro; `.dark` redefine as mesmas variáveis. Nenhum componente escreve cor literal.
+* `@theme inline` expõe os tokens ao Tailwind (`bg-surface`, `text-text-muted`, `border-border`, `bg-sidebar-accent`…).
+* Novos: `--surface-sunken`, família `--sidebar-*`, `--glass-*`, `--destructive-foreground`, elevações `--elevation-1..4` (expostas como `shadow-level-1..4`), curvas `--ease-apple | --ease-entrance | --ease-exit | --ease-spring` e durações `--duration-instant | fast | normal | slow`.
+* Utilitários: `.glass`, `.glass-strong`, `.glass-edge` (material de vidro), `.press` (recuo ao pressionar) e `.tabular` (numerais tabulares).
+
+### Camada 2 — Primitivos
+
+Além dos existentes (`button`, `badge`, `card`, `input`, `select`, `textarea`, `skeleton`, `sonner`), a base agora inclui `alert`, `avatar`, `breadcrumb`, `checkbox`, `collapsible`, `command`, `dialog`, `dropdown-menu`, `input-group`, `label`, `popover`, `progress`, `scroll-area`, `separator`, `sheet`, `sidebar`, `switch`, `table`, `tabs` e `tooltip`.
+
+* `button` virou pílula, com os tamanhos `icon-sm` (32 px), `icon` (40 px) e `icon-lg` (48 px), e recua 3% ao ser pressionado.
+* `table` foi reescrita sobre os tokens do projeto: é Server Component, aceita `align` e `sticky` por célula e `scrollLabel` para tornar a região rolável acessível ao teclado.
+* Componentes trazidos do registro devem ser adaptados aos tokens antes de entrar em uso — o estilo padrão do shadcn não é a identidade final.
+
+### Camada 3 — Padrões (`src/components/patterns/`)
+
+| Padrão | Uso |
+| --- | --- |
+| `StatGrid` + `StatCard` | grade bento de indicadores, com ícone, tendência e link opcional |
+| `BarList` | distribuições e funil em HTML/CSS, sem biblioteca de gráficos |
+| `DataTableFrame`, `DataTableToolbar`, `DataTableSortLink`, `DataTablePagination`, `DataField` | listagens: moldura, contagem, ordenação por link e paginação |
+| `EmptyState` | estado vazio nas variantes `panel` e `inline` |
+| `Section` | bloco de conteúdo com cabeçalho rotulado |
+
+`DataTableSortLink` ordena por query string, no servidor: funciona sem JavaScript e preserva o histórico.
+
+### Camada 4 — Shell
+
+* Barra lateral colapsável em trilho de ícones (`Ctrl/⌘ + B`), com estado persistido no cookie `sidebar_state` e lido no servidor em `(dashboard)/layout.tsx` para evitar salto visual.
+* No celular a navegação vira `Sheet`; os links fecham o painel ao navegar.
+* Topo fixo com alternador da barra lateral, trilha de navegação derivada da rota e busca global.
+* Paleta de comandos (`Ctrl/⌘ + K`) para navegar entre páginas e alternar o tema, respeitando as permissões do usuário.
+* Menu do usuário com iniciais, papel, escolha de aparência e sair.
+* A lista de navegação vive em `layout/navigation-items.ts` e alimenta a barra lateral, a trilha e a paleta — uma fonte só.
+
 ---
 
 # 2. Princípios Visuais
@@ -1803,14 +1913,14 @@ Informações sensíveis não devem aparecer desnecessariamente em:
 
 * não criar gradientes chamativos;
 * não utilizar muitas cores estruturais;
-* não utilizar glassmorphism;
-* não usar sombras fortes;
+* não aplicar vidro fora das superfícies de navegação e sobreposição;
+* não usar sombras fortes (máximo 0,12 no claro e 0,40 no escuro);
 * não utilizar bordas grossas;
 * não criar interfaces visualmente densas;
 * não utilizar fontes diferentes sem necessidade;
 * não usar emojis como ícones principais;
 * não usar cores semânticas como decoração;
-* não fazer todos os componentes pill-shaped;
+* não fazer todos os componentes pill-shaped — a pílula é dos botões e badges;
 * não colocar todos os textos em negrito;
 * não usar tabelas desktop complexas no mobile;
 * não criar estilos exclusivos para cada página;
@@ -1987,15 +2097,19 @@ Não considerar o estilo padrão do shadcn como identidade final.
 
 # 75. Dark Mode
 
-Dark mode não faz parte do MVP.
+> Atualizado em 8 de setembro de 2026. A restrição anterior (*light mode only*) não vale mais.
 
-A plataforma será inicialmente:
+A plataforma oferece **claro, escuro e sistema**. A preferência é do usuário e fica em `localStorage` (`clinica-theme`); o padrão é acompanhar o sistema operacional.
 
-```text
-Light Mode Only
-```
+Regras:
 
-Não criar complexidade adicional para dark mode neste momento.
+* O tema escuro **não** é uma paleta nova: é a mesma semântica com outros valores. Toda cor sai de token (`bg-surface`, `text-text-muted`, `border-border`…). Um componente que escreve `#FFFFFF` ou `bg-white` quebra o tema escuro e não deve ser aceito em revisão.
+* Superfícies escuras seguem a mesma temperatura quente do tema claro (`#141311` de fundo, `#1C1B19` de superfície), não cinza-azulado.
+* No escuro o azul principal clareia para `#4C9FE8` e o texto sobre ele escurece (`--primary-foreground: #0C1A2B`), para manter contraste no botão primário.
+* Cores semânticas e de prioridade têm par claro/escuro; a leitura de "alta / média / baixa" não pode depender só da cor.
+* Onde alternar: menu do usuário na barra lateral, paleta de comandos (`⌘K`) e o botão no topo da tela de login.
+
+Ao criar um componente, verificar nos dois temas antes de considerá-lo pronto.
 
 ---
 

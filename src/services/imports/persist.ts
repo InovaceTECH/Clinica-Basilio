@@ -6,7 +6,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import type { TenantContext } from "@/auth/tenant-context";
-import { db } from "@/db";
+import { db, executeBatch } from "@/db";
 import { importRows, imports, opportunities, patients } from "@/db/schema";
 import {
   commitImportSchema,
@@ -312,16 +312,16 @@ export async function persistImport(
         budgetDate: normalizedRow.budgetDate,
         budgetValue: normalizedRow.budgetValue,
       });
-      const auditRow = db.insert(importRows).values({
+      const auditValues = {
         clinicId: tenant.clinicId,
         importId: importRecord.id,
         rowNumber: row.rowNumber,
         sourceFingerprint: calculatedFingerprint,
-        status: "IMPORTED",
-      });
+        status: "IMPORTED" as const,
+      };
 
       if (patient) {
-        await db.batch([
+        await executeBatch(db => [
           db.insert(opportunities).values({
             budgetDate: normalizedRow.budgetDate,
             budgetValue: normalizedRow.budgetValue.toFixed(2),
@@ -335,10 +335,10 @@ export async function persistImport(
             status: "FOLLOW_UP_SCHEDULED",
             treatment: normalizedRow.treatment,
           }),
-          auditRow,
-        ]);
+          db.insert(importRows).values(auditValues),
+        ] as const);
       } else {
-        const createPatientAndOpportunity = db.execute(sql`
+        const createPatientAndOpportunity = sql`
           WITH created_patient AS (
             INSERT INTO "patients" ("clinic_id", "name", "phone", "external_reference")
             VALUES (${tenant.clinicId}, ${normalizedRow.patientName}, ${normalizedRow.phone ?? null}, ${normalizedRow.externalReference ?? null})
@@ -347,9 +347,9 @@ export async function persistImport(
           INSERT INTO "opportunities" ("clinic_id", "patient_id", "treatment", "budget_value", "budget_date", "raw_objection", "notes", "priority_score", "priority", "source_fingerprint", "status")
           SELECT ${tenant.clinicId}, ${sql.raw('"created_patient"."id"')}, ${normalizedRow.treatment}, ${normalizedRow.budgetValue.toFixed(2)}, ${normalizedRow.budgetDate}, ${normalizedRow.rawObjection ?? null}, ${normalizedRow.notes ?? null}, ${priority.score}, ${priority.priority}, ${calculatedFingerprint}, ${"FOLLOW_UP_SCHEDULED"}
           FROM created_patient
-        `);
+        `;
 
-        await db.batch([createPatientAndOpportunity, auditRow]);
+        await executeBatch(db => [db.execute(createPatientAndOpportunity), db.insert(importRows).values(auditValues)] as const);
       }
 
       importedRows += 1;

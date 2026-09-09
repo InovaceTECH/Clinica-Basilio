@@ -2,7 +2,7 @@ import "server-only";
 import { and, asc, eq } from "drizzle-orm";
 import { assertPermission } from "@/auth/authorization";
 import type { TenantContext } from "@/auth/tenant-context";
-import { db } from "@/db";
+import { db, executeBatch } from "@/db";
 import { followUps, opportunities } from "@/db/schema";
 import { createFollowUpSchema, type CreateFollowUpInput, updateFollowUpSchema, type UpdateFollowUpInput } from "@/schemas/follow-up";
 
@@ -15,10 +15,10 @@ async function opportunityFor(tenant: TenantContext, opportunityId: string) {
 }
 export async function createFollowUp(tenant: TenantContext, input: CreateFollowUpInput) {
   assertPermission(tenant, "followUps.create"); const followUp = createFollowUpSchema.parse(input); const opportunity = await opportunityFor(tenant, followUp.opportunityId); const now = new Date();
-  const [created] = await db.batch([
+  const [created] = await executeBatch(db => [
     db.insert(followUps).values({ clinicId: tenant.clinicId, opportunityId: opportunity.id, assignedUserId: tenant.userId, scheduledAt: followUp.scheduledAt, reason: followUp.reason, notes: followUp.notes ?? null, createdAt: now, updatedAt: now }).returning(),
     db.update(opportunities).set({ nextFollowUpAt: followUp.scheduledAt, status: "FOLLOW_UP_SCHEDULED", updatedAt: now }).where(and(eq(opportunities.id, opportunity.id), eq(opportunities.clinicId, tenant.clinicId))),
-  ]); return created[0]!;
+  ] as const); return created[0]!;
 }
 export async function updateFollowUp(tenant: TenantContext, id: string, input: UpdateFollowUpInput) {
   assertPermission(tenant, "followUps.create"); const value = updateFollowUpSchema.parse(input); const now = new Date();
