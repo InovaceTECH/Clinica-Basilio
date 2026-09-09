@@ -5,7 +5,6 @@ import { CheckCircle2, FileSpreadsheet, LoaderCircle, Trash2, TriangleAlert, Upl
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { ImportColumnMapper } from "@/components/imports/import-column-mapper";
 import { type ImportColumnMapping } from "@/schemas/import-mapping";
 import {
@@ -170,7 +169,7 @@ export function ImportPreview() {
               </span>
               <span className="mt-3 text-body-sm font-medium text-foreground">Selecione uma planilha</span>
               <span className="mt-1 text-caption text-text-muted">CSV ou XLSX</span>
-              <Input
+              <input
                 accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 className="sr-only"
                 id="import-file"

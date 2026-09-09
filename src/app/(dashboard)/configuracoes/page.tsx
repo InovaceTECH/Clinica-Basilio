@@ -8,7 +8,7 @@ export default async function SettingsPage() { const rules=await getCommercialRu
         description="Gerencie as informações da clínica e as regras comerciais autorizadas."
         title="Configurações"
       />
-      <CreateConfigForm type="rule"/><div className="mt-6 space-y-3">{rules.map(rule=><article className="rounded-lg border border-border p-4" key={rule.id}><p className="font-medium">{rule.title}</p><p className="mt-2 text-body-sm text-text-secondary">{rule.content}</p></article>)}</div>
+      <CreateConfigForm type="rule"/><div className="mt-6 space-y-3">{rules.length === 0 ? <p className="rounded-lg border border-border bg-surface p-6 text-body-sm text-text-muted">Nenhuma regra comercial cadastrada. Adicione acima somente condições aprovadas pela clínica.</p> : rules.map(rule=><article className="rounded-lg border border-border bg-surface p-4" key={rule.id}><p className="font-medium">{rule.title}</p><p className="mt-2 text-body-sm text-text-secondary">{rule.content}</p></article>)}</div>
     </>
   );
 }

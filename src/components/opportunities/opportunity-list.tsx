@@ -125,20 +125,30 @@ export function OpportunityList({ filters, result }: { filters: OpportunityListF
             <p className="text-body-sm text-text-muted">{result.total} {result.total === 1 ? "resultado" : "resultados"}</p>
           </div>
 
-          <Card className="hidden overflow-hidden md:block">
+          <Card className="hidden overflow-hidden xl:block">
             <CardContent className="p-0">
               <table className="w-full border-collapse text-left text-body-sm">
                 <thead className="bg-surface-secondary text-label text-text-muted">
-                  <tr>{["Paciente", "Tratamento", "Valor", "Objeção", "Prioridade", "Status", "Último contato", "Próximo follow-up", "Ação"].map((heading) => <th className="px-4 py-3 font-medium" key={heading} scope="col">{heading}</th>)}</tr>
+                  <tr>
+                    <th className="px-4 py-3 font-medium" scope="col">Paciente</th>
+                    <th className="px-4 py-3 font-medium" scope="col">Tratamento</th>
+                    <th className="px-4 py-3 font-medium" scope="col">Valor</th>
+                    <th className="hidden px-4 py-3 font-medium 2xl:table-cell" scope="col">Objeção</th>
+                    <th className="px-4 py-3 font-medium" scope="col">Prioridade</th>
+                    <th className="px-4 py-3 font-medium" scope="col">Status</th>
+                    <th className="hidden px-4 py-3 font-medium 2xl:table-cell" scope="col">Último contato</th>
+                    <th className="px-4 py-3 font-medium" scope="col">Próximo follow-up</th>
+                    <th className="px-4 py-3 font-medium" scope="col">Ação</th>
+                  </tr>
                 </thead>
                 <tbody>{result.items.map((item) => <tr className="border-t border-border" key={item.id}>
                   <td className="max-w-44 px-4 py-4 font-medium text-foreground">{item.patientName}</td>
                   <td className="max-w-48 px-4 py-4 text-text-secondary">{item.treatment}</td>
                   <td className="whitespace-nowrap px-4 py-4 text-text-secondary">{formatCurrency(item.budgetValue)}</td>
-                  <td className="max-w-48 px-4 py-4 text-text-secondary">{item.rawObjection ?? (item.objectionCategory ? objectionLabels[item.objectionCategory] : "—")}</td>
+                  <td className="hidden max-w-48 px-4 py-4 text-text-secondary 2xl:table-cell">{item.rawObjection ?? (item.objectionCategory ? objectionLabels[item.objectionCategory] : "—")}</td>
                   <td className="px-4 py-4"><PriorityBadge priority={item.priority} /></td>
                   <td className="px-4 py-4"><Badge variant="neutral">{statusLabels[item.status]}</Badge></td>
-                  <td className="whitespace-nowrap px-4 py-4 text-text-secondary">{formatDate(item.lastContactAt)}</td>
+                  <td className="hidden whitespace-nowrap px-4 py-4 text-text-secondary 2xl:table-cell">{formatDate(item.lastContactAt)}</td>
                   <td className="whitespace-nowrap px-4 py-4 text-text-secondary">{formatDate(item.nextFollowUpAt)}</td>
                   <td className="px-4 py-4"><Button asChild size="sm" variant="secondary"><Link href={`/oportunidades/${item.id}`}>Ver detalhes</Link></Button></td>
                 </tr>)}</tbody>
@@ -146,7 +156,7 @@ export function OpportunityList({ filters, result }: { filters: OpportunityListF
             </CardContent>
           </Card>
 
-          <div className="space-y-3 md:hidden">
+          <div className="space-y-3 xl:hidden">
             {result.items.map((item) => <Card key={item.id}><CardContent className="space-y-4 p-4">
               <div className="flex items-start justify-between gap-3"><div><h3 className="font-medium text-foreground">{item.patientName}</h3><p className="mt-1 text-body-sm text-text-muted">{item.treatment}</p></div><PriorityBadge priority={item.priority} /></div>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-body-sm"><Detail label="Valor" value={formatCurrency(item.budgetValue)} /><Detail label="Status" value={statusLabels[item.status]} /><Detail label="Objeção" value={item.rawObjection ?? (item.objectionCategory ? objectionLabels[item.objectionCategory] : "—")} /><Detail label="Próximo follow-up" value={formatDate(item.nextFollowUpAt)} /></dl>
