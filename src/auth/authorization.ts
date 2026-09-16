@@ -5,6 +5,7 @@ import type { TenantContext } from "./tenant-context";
 
 export const permissions = [
   "opportunities.read",
+  "opportunities.update",
   "opportunities.analyze",
   "interactions.create",
   "followUps.create",
@@ -21,6 +22,7 @@ export type Permission = (typeof permissions)[number];
 
 const receptionistPermissions: readonly Permission[] = [
   "opportunities.read",
+  "opportunities.update",
   "opportunities.analyze",
   "interactions.create",
   "followUps.create",

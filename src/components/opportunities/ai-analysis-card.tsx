@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { AiAnalysisTrigger } from "@/components/opportunities/ai-analysis-trigger";
 import { CopyMessageButton } from "@/components/opportunities/copy-message-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -15,6 +16,8 @@ type AiAnalysisCardProps = {
     nextAction: string;
     suggestedFollowUpDays: number;
   };
+  isOutdated: boolean;
+  opportunityId: string;
 };
 
 const objectionLabels: Record<string, string> = {
@@ -23,7 +26,7 @@ const objectionLabels: Record<string, string> = {
   NO_RESPONSE: "Sem resposta", OTHER: "Outra",
 };
 
-export function AiAnalysisCard({ analysis }: AiAnalysisCardProps) {
+export function AiAnalysisCard({ analysis, isOutdated, opportunityId }: AiAnalysisCardProps) {
   return (
     <Card className="border-primary/25">
       <CardHeader>
@@ -31,6 +34,12 @@ export function AiAnalysisCard({ analysis }: AiAnalysisCardProps) {
         <CardDescription>Revise a sugestão antes de entrar em contato. A decisão é sempre da equipe.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        {isOutdated ? (
+          <div className="rounded-md border border-warning-border bg-warning-bg p-4" role="status">
+            <p className="text-body-sm font-medium text-foreground">Dados atualizados desde esta análise</p>
+            <p className="mt-1 text-body-sm text-text-secondary">Gere uma nova análise para considerar as informações comerciais mais recentes.</p>
+          </div>
+        ) : null}
         <div><p className="text-label text-text-muted">Possível objeção</p><Badge className="mt-2" variant="info">{objectionLabels[analysis.objectionCategory] ?? "Outra"}</Badge></div>
         <AnalysisSection label="Objetivo do contato" value={analysis.contactGoal} />
         <div className="rounded-md bg-surface-secondary p-4"><h3 className="text-label font-medium">Mensagem sugerida</h3><p className="mt-2 break-words whitespace-pre-wrap text-body-sm leading-relaxed text-text-secondary">{analysis.suggestedMessage}</p><CopyMessageButton message={analysis.suggestedMessage} /></div>
@@ -44,6 +53,7 @@ export function AiAnalysisCard({ analysis }: AiAnalysisCardProps) {
           </div>
         </details>
         <p className="text-body-sm text-text-muted">Sugestão de retorno: em {analysis.suggestedFollowUpDays} {analysis.suggestedFollowUpDays === 1 ? "dia" : "dias"}. O follow-up não é agendado automaticamente.</p>
+        <AiAnalysisTrigger label="Gerar nova análise" opportunityId={opportunityId} variant="secondary" />
       </CardContent>
     </Card>
   );

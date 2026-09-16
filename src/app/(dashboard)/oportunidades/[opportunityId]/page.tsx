@@ -20,6 +20,7 @@ import { AiAnalysisCard } from "@/components/opportunities/ai-analysis-card";
 import { OpportunityTimeline } from "@/components/opportunities/opportunity-timeline";
 import { RegisterInteractionDialog } from "@/components/opportunities/register-interaction-dialog";
 import { FollowUpPanel } from "@/components/opportunities/follow-up-panel";
+import { EditOpportunityDialog } from "@/components/opportunities/edit-opportunity-dialog";
 import { getOpportunityAnalysisHistory } from "@/services/ai/queries";
 import { getOpportunityInteractionHistory } from "@/services/interactions/queries";
 import { getPendingFollowUps } from "@/services/follow-ups/queries";
@@ -90,8 +91,22 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
     getPendingFollowUps(tenant, opportunity.id),
   ]);
   const analysis = analyses[0] ?? null;
+  const isAnalysisOutdated = analysis ? opportunity.updatedAt > analysis.createdAt : false;
 
   const objection = opportunity.rawObjection ?? (opportunity.objectionCategory ? objectionLabels[opportunity.objectionCategory] : "Não informada");
+  const editableOpportunity = {
+    id: opportunity.id,
+    patientName: opportunity.patientName,
+    patientPhone: opportunity.patientPhone,
+    treatment: opportunity.treatment,
+    budgetValue: opportunity.budgetValue,
+    budgetDate: opportunity.budgetDate.toISOString().slice(0, 10),
+    professionalName: opportunity.professionalName,
+    leadSource: opportunity.leadSource,
+    rawObjection: opportunity.rawObjection,
+    notes: opportunity.notes,
+    objectionCategory: opportunity.objectionCategory,
+  };
 
   return (
     <>
@@ -107,6 +122,7 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
             <CardHeader>
               <CardTitle>Dados da oportunidade</CardTitle>
               <CardDescription>Informações comerciais do orçamento e do paciente.</CardDescription>
+              <CardAction><EditOpportunityDialog opportunity={editableOpportunity} /></CardAction>
             </CardHeader>
             <CardContent>
               <dl className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -127,6 +143,7 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
             <CardHeader>
               <CardTitle>Objeção e observações</CardTitle>
               <CardDescription>Contexto comercial informado no orçamento.</CardDescription>
+              <CardAction><EditOpportunityDialog opportunity={editableOpportunity} /></CardAction>
             </CardHeader>
             <CardContent className="space-y-5">
               <div><p className="text-label text-text-muted">Objeção</p><p className="mt-1 text-body text-text-secondary">{objection}</p></div>
@@ -150,7 +167,7 @@ export default async function OpportunityPage({ params }: PageProps<"/oportunida
           </Card>
 
           {analysis ? (
-            <AiAnalysisCard analysis={analysis} />
+            <AiAnalysisCard analysis={analysis} isOutdated={isAnalysisOutdated} opportunityId={opportunity.id} />
           ) : (
             <Card>
               <CardHeader>

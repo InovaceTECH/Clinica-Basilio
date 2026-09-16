@@ -61,3 +61,18 @@ export const createOpportunitySchema = z.object({
 });
 
 export type CreateOpportunityInput = z.input<typeof createOpportunitySchema>;
+
+export const updateOpportunitySchema = z.object({
+  patientName: z.string().trim().min(2).max(160),
+  patientPhone: optionalText(32),
+  treatment: z.string().trim().min(2).max(500),
+  budgetValue: z.coerce.number().finite().min(0).max(9_999_999_999.99),
+  budgetDate: z.coerce.date(),
+  professionalName: optionalText(160),
+  leadSource: optionalText(100),
+  rawObjection: optionalText(4_000),
+  notes: optionalText(4_000),
+  objectionCategory: objectionCategorySchema.optional(),
+});
+
+export type UpdateOpportunityInput = z.input<typeof updateOpportunitySchema>;

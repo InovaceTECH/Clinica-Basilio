@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ilike, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import type { TenantContext } from "@/auth/tenant-context";
@@ -289,8 +289,24 @@ export async function persistImport(
         )
         .limit(1);
 
-      if (existingOpportunity) {
-        if (!patient || patient.id !== existingOpportunity.patientId) {
+      const [existingOpportunityForPatient] = patient
+        ? await db
+            .select({ id: opportunities.id, patientId: opportunities.patientId })
+            .from(opportunities)
+            .where(
+              and(
+                eq(opportunities.clinicId, tenant.clinicId),
+                eq(opportunities.patientId, patient.id),
+                ilike(opportunities.treatment, normalizedRow.treatment),
+              ),
+            )
+            .limit(1)
+        : [];
+
+      if (existingOpportunity || existingOpportunityForPatient) {
+        const opportunityToSkip = existingOpportunity ?? existingOpportunityForPatient;
+
+        if (!patient || patient.id !== opportunityToSkip.patientId) {
           throw new ImportPersistenceError(
             "Não foi possível confirmar que o orçamento existente pertence ao mesmo paciente. Revise a identificação.",
             "PATIENT_CONFLICT",

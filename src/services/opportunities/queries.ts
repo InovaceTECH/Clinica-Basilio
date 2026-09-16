@@ -27,6 +27,7 @@ const opportunitySelection = {
   nextFollowUpAt: opportunities.nextFollowUpAt,
   responsibleUserId: opportunities.responsibleUserId,
   createdAt: opportunities.createdAt,
+  updatedAt: opportunities.updatedAt,
   patientName: patients.name,
   patientPhone: patients.phone,
   patientExternalReference: patients.externalReference,

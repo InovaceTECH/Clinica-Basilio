@@ -5,8 +5,21 @@ import { useRouter } from "next/navigation";
 import { LoaderCircle, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export function AiAnalysisTrigger({ opportunityId }: { opportunityId: string }) {
+type AiAnalysisTriggerProps = {
+  className?: string;
+  label?: string;
+  opportunityId: string;
+  variant?: "default" | "secondary";
+};
+
+export function AiAnalysisTrigger({
+  className,
+  label = "Analisar oportunidade",
+  opportunityId,
+  variant = "default",
+}: AiAnalysisTriggerProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,9 +52,9 @@ export function AiAnalysisTrigger({ opportunityId }: { opportunityId: string }) 
   return (
     <div className="space-y-3">
       {error ? <p className="text-body-sm text-danger" role="alert">{error}</p> : null}
-      <Button className="w-full" disabled={isLoading} onClick={handleAnalysis} type="button">
+      <Button className={cn("w-full", className)} disabled={isLoading} onClick={handleAnalysis} type="button" variant={variant}>
         {isLoading ? <LoaderCircle aria-hidden="true" className="animate-spin" /> : <Sparkles aria-hidden="true" />}
-        {isLoading ? "Gerando análise..." : "Analisar oportunidade"}
+        {isLoading ? "Gerando análise..." : label}
       </Button>
     </div>
   );
