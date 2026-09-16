@@ -10,6 +10,14 @@ import { env } from "@/lib/env";
 export const auth = betterAuth({
   appName: "Clínica Basilico",
   baseURL: env.BETTER_AUTH_URL,
+  // O Next.js pode ocupar portas diferentes durante o desenvolvimento local.
+  // Mantemos apenas origens loopback explícitas além da URL configurada.
+  trustedOrigins: [
+    env.BETTER_AUTH_URL,
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3010",
+  ],
   secret: env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: "pg",
